@@ -1,7 +1,7 @@
 # Emotional State Classification on a multimodal physiological dataset.
 
 
-The heart failure dataset used in this repo is from 
+The multimodal physiological dataset used in this repo is from 
 [DEAP dataset](https://www.eecs.qmul.ac.uk/mmv/datasets/deap/index.html)
 ["DEAP: A Database for Emotion Analysis using Physiological Signals (PDF)", S. Koelstra, C. Muehl, M. Soleymani, J.-S. Lee, A. Yazdani, T. Ebrahimi, T. Pun, A. Nijholt, I. Patras, EEE Transactions on Affective Computing, vol. 3, no. 1, pp. 18-31, 2012] (https://www.eecs.qmul.ac.uk/mmv/datasets/deap/doc/tac_special_issue_2011.pdf).
 
