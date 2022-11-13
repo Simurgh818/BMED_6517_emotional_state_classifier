@@ -8,6 +8,7 @@ import scipy.signal as signal
 import heartpy as hp
 from scipy.stats import skew, kurtosis
 from scipy.signal import argrelextrema
+import pandas as pd
 
 def extract_resp_feats(Resp,fs=128):
     # Respiration Features:
@@ -124,12 +125,13 @@ def extract_GSR_feats(gsr,fs=128):
 
 feat_names = ['hEOG','vEOG','zEMG','tEMG','GSR','Resp','Pleth','T']
 feats = []
+labels = []
 all_errors = dict()
-for i in range(1,33):
+for i in range(1,23): # only the first 22 subjects now
     with open('D:\\BMED_6517_emotional_state_classifier\\Data\\DEAP\\data_preprocessed_python\\s{:02d}.dat'.format(i),'rb') as file:
         #subj_labels = pickle.load(file,encoding='latin1')
         full = pickle.load(file,encoding='latin1')
-        labels = full['labels']
+        labels.append(full['labels'])
         data_non_eeg = full['data'][:,32:,:]
         data = dict()
         for j in range(len(feat_names)):
@@ -142,12 +144,21 @@ for i in range(1,33):
     errors = R_errors + H_errors
     GSR_feats, G_names = extract_GSR_feats(data['GSR'][:,start:])
     sub = np.ones((40,1))*i
-    names = ['subject'] + R_names + T_names  + G_names
-    feats.append(np.hstack([sub,R_feats,T_feats,GSR_feats]))
+    names = ['subject'] + R_names + T_names + HR_names + G_names
+    feats.append(np.hstack([sub,R_feats,T_feats,HR_feats,GSR_feats]))
     if len(errors)>0:
         all_errors[str(i)] = errors
 
+label_names = ['valence','arousal','dominance','liking']
+labels = np.vstack(labels)
+labels = np.vstack([label_names,labels])
 feats = np.vstack(feats)
 H_feats = feats[:,18:31]
 np.where(H_feats[:,0] == -1)
 print(names)
+df = pd.DataFrame(feats,columns=names)
+final_feats = np.vstack([names,feats])
+final_feats = np.vstack([ names, df.to_numpy()])
+print(final_feats.shape)
+np.save('bipolar_feats_1_22.npy',final_feats)
+np.save('labels_1_22.npy',labels)
